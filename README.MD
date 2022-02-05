@@ -7,7 +7,9 @@
 ## Урок 1. Введение в REST и Django REST Framework
 * 1:24 install libs
 * 1:28 add app rest_framework | startapp authors
-*  
+* 1:29 model author
+* 1:31 urls rest
+* 
 
 ## Задания 1
 1. Создать новый проект на github или gitlab.
