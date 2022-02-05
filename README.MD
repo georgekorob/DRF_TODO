@@ -9,12 +9,16 @@
 * 1:28 add app rest_framework | startapp authors
 * 1:29 model author
 * 1:31 urls rest
-* 
+* 1:33 serializers
+* 1:37 views
+* 1:41 router
+* 1:58 resume
+* 2:08 hw
 
 ## Задания 1
-1. Создать новый проект на github или gitlab.
-2. Создать django-проект.
-3. Установить DRF и подключить его к django-проекту.
+[comment]: <> (1. Создать новый проект на github или gitlab.)
+[comment]: <> (2. Создать django-проект.)
+[comment]: <> (3. Установить DRF и подключить его к django-проекту.)
 4. Создать приложение для работы с пользователем.
 5. Создать свою модель пользователя.
 6. В ней поле email сделать уникальным.
