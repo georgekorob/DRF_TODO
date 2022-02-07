@@ -4,6 +4,6 @@ from django.core.management import call_command
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        for name in ['authapp', 'authors']:
+        for name in ['authapp']:
             with open(f'./{name}/fixtures/{name}.json', 'w') as file:
                 call_command('dumpdata', name, format='json', indent=3, stdout=file)

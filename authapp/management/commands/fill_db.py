@@ -3,7 +3,6 @@ import os
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from authapp.models import User
-from authors.models import Author
 
 
 def load_from_json(file_name):
@@ -28,7 +27,6 @@ class Command(BaseCommand):
                                       last_name='korobanov')
 
         # User.objects.all().delete()
-        # Author.objects.all().delete()
-        # for name in ['authapp', 'authors']:
+        # for name in ['authapp']:
         #     filename = f'./{name}/fixtures/{name}.json'
         #     call_command('loaddata', filename, app_label=name)
