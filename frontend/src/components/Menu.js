@@ -3,7 +3,7 @@ import React from 'react'
 
 const MenuItem = ({link}) => {
     return (
-        <a type={'button'} href={link.url}>{link.name}</a>
+        <a href={link.url}>{link.name}</a>
     )
 }
 

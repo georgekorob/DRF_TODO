@@ -1,6 +1,6 @@
 import React from 'react';
-// import axios from 'axios';
-import logo from './logo.svg';
+import axios from 'axios';
+// import logo from './logo.svg';
 import './App.css';
 import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
@@ -13,19 +13,18 @@ class App extends React.Component {
     this.state = {
       'users': [],
       'links': [],
-      'footer': '',
     }
   }
 
   componentDidMount() {
-    const userlist = [
-      {
-        'username': 'username1',
-        'first_name': 'first_name1',
-        'last_name': 'last_name1',
-        'email': 'email1'
-      }
-    ]
+    // const userlist = [
+    //   {
+    //     'username': 'username1',
+    //     'first_name': 'first_name1',
+    //     'last_name': 'last_name1',
+    //     'email': 'email1'
+    //   }
+    // ]
     const menulist = [
       {
         'name': 'Главная',
@@ -40,19 +39,25 @@ class App extends React.Component {
         'url': '#'
       }
     ]
-    this.setState(
-        {
-          'users': userlist,
-          'links': menulist
-        }
-    )
+    // this.setState(
+    //     {
+    //       'users': userlist,
+    //       'links': menulist
+    //     }
+    // )
+    axios.get('http://127.0.0.1:8000/api/users/').then(response => {
+      this.setState({
+        'users': response.data,
+        'links': menulist
+      })
+    }).catch(error => console.log(error))
     }
 
   render () {
     return (
         <div>
-          <MenuList links={this.state.links} />
-          <UserList users={this.state.users} />
+          <MenuList links={this.state.links}/>
+          <UserList users={this.state.users}/>
           <Footer/>
         </div>
     )
