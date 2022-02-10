@@ -7,14 +7,29 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-header, footer {
+form > .btn {
+  margin: 5px;
+}
+
+ul.navbar-nav > li > a {
+  margin: 2px;
+  border-radius: 4px;
+  padding: 3px 6px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+footer {
   background-color: #b4b4bb;
   height: 50px;
   text-align: center;
-  vertical-align: middle;
 }
 
-header a, footer div {
+footer div {
   margin: 20px;
   height: 100%;
   display: inline-block;

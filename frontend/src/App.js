@@ -7,6 +7,9 @@ import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
 
 
+const DOMAIN = 'http://127.0.0.1:8000/api/'
+const get_url = (url) => `${DOMAIN}${url}`
+
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -27,6 +30,10 @@ class App extends React.Component {
     // ]
     const menulist = [
       {
+        'name': 'Users',
+        'url': 'http://127.0.0.1:3000/'
+      },
+      {
         'name': 'Главная',
         'url': '#'
       },
@@ -45,7 +52,7 @@ class App extends React.Component {
     //       'links': menulist
     //     }
     // )
-    axios.get('http://127.0.0.1:8000/api/users/').then(response => {
+    axios.get(get_url('users/')).then(response => {
       this.setState({
         'users': response.data,
         'links': menulist
