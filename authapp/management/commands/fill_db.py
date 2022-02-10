@@ -1,9 +1,14 @@
 import json
 import os
+import random
+
 import names
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
+from django.utils import lorem_ipsum
+
 from authapp.models import User
+from projectapp.models import Project, Todo
 
 
 def load_from_json(file_name):
@@ -30,6 +35,16 @@ class Command(BaseCommand):
                                 email=f'{username}@testmail.ru',
                                 first_name=first_name,
                                 last_name=last_name)
+
+        Project.objects.all().delete()
+        Todo.objects.all().delete()
+        project1 = Project.objects.create(name='Записки', link='#')
+        users_in_project = User.objects.all()[:5]
+        project1.users.set(users_in_project)
+        for i in range(10):
+            Todo.objects.create(project=project1,
+                                text=lorem_ipsum.words(10),
+                                user=random.choice(users_in_project))
 
         # User.objects.all().delete()
         # for name in ['authapp']:
