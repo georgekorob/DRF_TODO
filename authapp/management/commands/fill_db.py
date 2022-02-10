@@ -1,12 +1,10 @@
 import json
 import os
 import random
-
 import names
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import lorem_ipsum
-
 from authapp.models import User
 from projectapp.models import Project, Todo
 
@@ -43,7 +41,7 @@ class Command(BaseCommand):
         project1.users.set(users_in_project)
         for i in range(10):
             Todo.objects.create(project=project1,
-                                text=lorem_ipsum.words(10),
+                                text=lorem_ipsum.words(10+i),
                                 user=random.choice(users_in_project))
 
         # User.objects.all().delete()
