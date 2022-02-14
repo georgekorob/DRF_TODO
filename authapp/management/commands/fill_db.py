@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 from django.utils import lorem_ipsum
 from authapp.models import User
 from projectapp.models import Project, Todo
+from mixer.backend.django import mixer
 
 
 def load_from_json(file_name):
@@ -33,9 +34,13 @@ class Command(BaseCommand):
                                 email=f'{username}@testmail.ru',
                                 first_name=first_name,
                                 last_name=last_name)
-
         Project.objects.all().delete()
         Todo.objects.all().delete()
+        # for i in range(5):
+        #     mixer.blend(Project)
+        #     mixer.blend(T_odo)
+        # print('done')
+
         project1 = Project.objects.create(name='Записки', link='#')
         users_in_project = User.objects.all()[:5]
         project1.users.set(users_in_project)

@@ -16,4 +16,4 @@ class TodoModelSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = Todo
-        fields = '__all__'
+        exclude = ('is_active',)
