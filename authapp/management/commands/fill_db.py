@@ -36,18 +36,18 @@ class Command(BaseCommand):
                                 last_name=last_name)
         Project.objects.all().delete()
         Todo.objects.all().delete()
-        # for i in range(5):
-        #     mixer.blend(Project)
-        #     mixer.blend(T_odo)
-        # print('done')
+        for i in range(200):
+            mixer.blend(Project)
+            mixer.blend(Todo)
+        print('done')
 
-        project1 = Project.objects.create(name='Записки', link='#')
-        users_in_project = User.objects.all()[:5]
-        project1.users.set(users_in_project)
-        for i in range(10):
-            Todo.objects.create(project=project1,
-                                text=lorem_ipsum.words(10+i),
-                                user=random.choice(users_in_project))
+        # project1 = Project.objects.create(name='Записки', link='#')
+        # users_in_project = User.objects.all()[:5]
+        # project1.users.set(users_in_project)
+        # for i in range(10):
+        #     T_odo.objects.create(project=project1,
+        #                         text=lorem_ipsum.words(10+i),
+        #                         user=random.choice(users_in_project))
 
         # User.objects.all().delete()
         # for name in ['authapp']:
