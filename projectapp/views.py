@@ -17,6 +17,15 @@ class ProjectModelViewSet(ModelViewSet):
     filterset_class = ProjectFilter
 
 
+class TodoLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 20
+
+
 class TodoModelViewSet(ModelViewSet):
     queryset = Todo.objects.all()
     serializer_class = TodoModelSerializer
+    pagination_class = TodoLimitOffsetPagination
+    filterset_fields = ['project']
+
+    def perform_destroy(self, instance):
+        instance.is_active = False

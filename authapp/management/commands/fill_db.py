@@ -25,7 +25,7 @@ class Command(BaseCommand):
         User.objects.create_superuser(username=os.getenv('SUPER_USER_USERNAME'),
                                       password=os.getenv('SUPER_USER_PASSWORD'),
                                       email=os.getenv('SUPER_USER_EMAIL'))
-        for i in range(10):
+        for i in range(120):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             username = f'{first_name}{last_name[:4]}{i}'.lower()
@@ -34,20 +34,18 @@ class Command(BaseCommand):
                                 email=f'{username}@testmail.ru',
                                 first_name=first_name,
                                 last_name=last_name)
+
         Project.objects.all().delete()
         Todo.objects.all().delete()
-        for i in range(200):
-            mixer.blend(Project)
-            mixer.blend(Todo)
-        print('done')
-
-        # project1 = Project.objects.create(name='Записки', link='#')
-        # users_in_project = User.objects.all()[:5]
-        # project1.users.set(users_in_project)
-        # for i in range(10):
-        #     T_odo.objects.create(project=project1,
-        #                         text=lorem_ipsum.words(10+i),
-        #                         user=random.choice(users_in_project))
+        for p_i in range(20):
+            project = Project.objects.create(name=f'Проект {p_i}', link='#')
+            users = list(User.objects.all())
+            random_users = random.sample(users, 5)
+            project.users.set(random_users)
+            for i in range(3):
+                Todo.objects.create(project=project,
+                                    text=f'Записка {i}: {lorem_ipsum.words(10 + i)}',
+                                    user=random.choice(random_users))
 
         # User.objects.all().delete()
         # for name in ['authapp']:
