@@ -16,6 +16,14 @@ class ProjectModelViewSet(ModelViewSet):
     pagination_class = ProjectLimitOffsetPagination
     filterset_class = ProjectFilter
 
+    # Another filter
+    # def get_queryset(self):
+    #     queryset = Project.objects.all()
+    #     name = self.request.query_params.get('name', None)
+    #     if name:
+    #         queryset = queryset.filter(name__contains=name)
+    #     return queryset
+
 
 class TodoLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 20
@@ -31,3 +39,14 @@ class TodoModelViewSet(ModelViewSet):
     def perform_destroy(self, instance):
         instance.is_active = False
         instance.save()
+
+    # Another method
+    # def destroy(self, request, *args, **kwargs):
+    #     try:
+    #         instance = self.get_object()
+    #         instance.is_active = False
+    #         instance.save()
+    #     except:
+    #         return Response(status=status.HTTP_404_NOT_FOUND)
+    #     else:
+    #         return Response(status=status.HTTP_204_NO_CONTENT)
