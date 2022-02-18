@@ -47,6 +47,7 @@ class Command(BaseCommand):
                                      email=f'{username}@testmail.ru',
                                      first_name=first_name,
                                      last_name=last_name)
+            print(f'User {i} added.')
         for p_i in range(20):
             users = list(User.objects.all())
             random_users = random.sample(users, 5)
@@ -60,6 +61,7 @@ class Command(BaseCommand):
                 Todo.objects.create(project=project,
                                     text=' '.join(text).capitalize(),
                                     user=random.choice(random_users) if i else users[0])
+            print(f'Project {p_i} added.')
 
         # User.objects.all().delete()
         # for name in ['authapp']:
