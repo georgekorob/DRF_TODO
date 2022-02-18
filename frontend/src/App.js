@@ -9,6 +9,7 @@ import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import ProjectList from "./components/Projects";
 import TodoList from "./components/Todos";
 import NotFound404 from "./components/NotFound404";
+import ProjectTodoList from "./components/ProjectTodos";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -90,6 +91,9 @@ class App extends React.Component {
               </Route>
               <Route exact path='/todos'>
                 <TodoList todos={this.state.todos}/>
+              </Route>
+              <Route path='/project/:id'>
+                <ProjectTodoList todos={this.state.todos}/>
               </Route>
               <Redirect from='/users' to='/'/>
               <Route component={NotFound404}/>
