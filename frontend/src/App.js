@@ -6,6 +6,7 @@ import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
 import {BrowserRouter, Route} from "react-router-dom";
+import ProjectList from "./components/Projects";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -16,6 +17,8 @@ class App extends React.Component {
     this.state = {
       'users': [],
       'menulinks': [],
+      'projects': [],
+      'todos': [],
     }
   }
 
@@ -29,7 +32,7 @@ class App extends React.Component {
       {
         'id': 2,
         'name': 'Projects',
-        'url': '/'
+        'url': '/projects'
       },
       {
         'id': 3,
@@ -59,6 +62,16 @@ class App extends React.Component {
         'menulinks': menulist
       })
     }).catch(error => console.log(error))
+    axios.get(get_url('projects/')).then(response => {
+      this.setState({
+        'projects': response.data
+      })
+    }).catch(error => console.log(error))
+    axios.get(get_url('todos/')).then(response => {
+      this.setState({
+        'todos': response.data
+      })
+    }).catch(error => console.log(error))
   }
 
   render () {
@@ -69,6 +82,12 @@ class App extends React.Component {
             <Route exact path='/'>
               <UserList users={this.state.users}/>
             </Route>
+            <Route exact path='/projects'>
+              <ProjectList projects={this.state.projects}/>
+            </Route>
+            {/*<Route exact path='/'>*/}
+            {/*  <UserList todos={this.state.todos}/>*/}
+            {/*</Route>*/}
           </BrowserRouter>
           <Footer/>
         </div>

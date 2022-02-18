@@ -42,11 +42,11 @@ class Command(BaseCommand):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             username = f'{first_name}{last_name[:4]}{i}'.lower()
-            User.objects.create(username=username,
-                                password=f'testpass',
-                                email=f'{username}@testmail.ru',
-                                first_name=first_name,
-                                last_name=last_name)
+            User.objects.create_user(username=username,
+                                     password=f'testpass',
+                                     email=f'{username}@testmail.ru',
+                                     first_name=first_name,
+                                     last_name=last_name)
         for p_i in range(20):
             project = Project.objects.create(name=f'Проект {p_i}', link='#')
             users = list(User.objects.all())
