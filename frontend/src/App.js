@@ -5,9 +5,10 @@ import './App.css';
 import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import ProjectList from "./components/Projects";
 import TodoList from "./components/Todos";
+import NotFound404 from "./components/NotFound404";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -80,15 +81,19 @@ class App extends React.Component {
         <div>
           <BrowserRouter>
             <MenuList links={this.state.menulinks}/>
-            <Route exact path='/'>
-              <UserList users={this.state.users}/>
-            </Route>
-            <Route exact path='/projects'>
-              <ProjectList projects={this.state.projects}/>
-            </Route>
-            <Route exact path='/todos'>
-              <TodoList todos={this.state.todos}/>
-            </Route>
+            <Switch>
+              <Route exact path='/'>
+                <UserList users={this.state.users}/>
+              </Route>
+              <Route exact path='/projects'>
+                <ProjectList projects={this.state.projects}/>
+              </Route>
+              <Route exact path='/todos'>
+                <TodoList todos={this.state.todos}/>
+              </Route>
+              <Redirect from='/users' to='/'/>
+              <Route component={NotFound404}/>
+            </Switch>
           </BrowserRouter>
           <Footer/>
         </div>
