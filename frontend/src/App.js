@@ -6,7 +6,6 @@ import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
 
-
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
 
@@ -15,19 +14,11 @@ class App extends React.Component {
     super(props)
     this.state = {
       'users': [],
-      'links': [],
+      'menulinks': [],
     }
   }
 
   componentDidMount() {
-    // const userlist = [
-    //   {
-    //     'username': 'username1',
-    //     'first_name': 'first_name1',
-    //     'last_name': 'last_name1',
-    //     'email': 'email1'
-    //   }
-    // ]
     const menulist = [
       {
         'name': 'Users',
@@ -46,24 +37,19 @@ class App extends React.Component {
         'url': '#'
       }
     ]
-    // this.setState(
-    //     {
-    //       'users': userlist,
-    //       'links': menulist
-    //     }
-    // )
+
     axios.get(get_url('users/')).then(response => {
       this.setState({
         'users': response.data,
-        'links': menulist
+        'menulinks': menulist
       })
     }).catch(error => console.log(error))
-    }
+  }
 
   render () {
     return (
         <div>
-          <MenuList links={this.state.links}/>
+          <MenuList links={this.state.menulinks}/>
           <UserList users={this.state.users}/>
           <Footer/>
         </div>

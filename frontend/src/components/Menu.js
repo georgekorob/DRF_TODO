@@ -1,5 +1,5 @@
 import React from 'react'
-
+// import {Link} from "react-router-dom";
 
 const MenuItem = ({link}) => {
     return (
@@ -9,6 +9,7 @@ const MenuItem = ({link}) => {
     )
 }
 
+// {/*<Link className="nav-link" to={link.url}>{link.name}</Link>*/}
 
 const MenuList = ({links}) => {
     return (
