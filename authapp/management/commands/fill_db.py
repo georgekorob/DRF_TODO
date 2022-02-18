@@ -21,7 +21,20 @@ def load_from_json(file_name):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        User.objects.all().delete()
+        if os.path.exists('db.sqlite3'):
+            os.remove('db.sqlite3')
+        print('deleted db.sqlite3')
+        for dirapp in os.listdir():
+            if os.path.isdir(dirapp) and os.path.exists(f'{dirapp}/migrations'):
+                for filemig in os.listdir(f'{dirapp}/migrations'):
+                    if filemig not in ['__init__.py', '__pycache__']:
+                        filename = f'{dirapp}/migrations/{filemig}'
+                        os.remove(filename)
+                        print(f'deleted {filename}')
+        print('makemigrations...')
+        call_command('makemigrations')
+        print('migrate...')
+        call_command('migrate')
         User.objects.create_superuser(username=os.getenv('SUPER_USER_USERNAME'),
                                       password=os.getenv('SUPER_USER_PASSWORD'),
                                       email=os.getenv('SUPER_USER_EMAIL'))
@@ -34,9 +47,6 @@ class Command(BaseCommand):
                                 email=f'{username}@testmail.ru',
                                 first_name=first_name,
                                 last_name=last_name)
-
-        Project.objects.all().delete()
-        Todo.objects.all().delete()
         for p_i in range(20):
             project = Project.objects.create(name=f'Проект {p_i}', link='#')
             users = list(User.objects.all())

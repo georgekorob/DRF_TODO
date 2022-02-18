@@ -1,45 +1,32 @@
 import React from 'react'
 
-
-const UserItem = ({useritem}) => {
+const UserItem = ({user}) => {
     return (
         <tr>
-            <td>
-                {useritem.username}
-            </td>
-            <td>
-                {useritem.first_name}
-            </td>
-            <td>
-                {useritem.last_name}
-            </td>
-            <td>
-                {useritem.email}
-            </td>
+            <td>{user.username}</td>
+            <td>{user.first_name}</td>
+            <td>{user.last_name}</td>
+            <td>{user.email}</td>
         </tr>
     )
 }
 
-
 const UserList = ({users}) => {
     return (
         <table>
-            <th>
-                Login
-            </th>
-            <th>
-                First name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            {users.map((useritem) => <UserItem useritem={useritem}/>)}
+            <thead>
+                <tr>
+                    <th>Login</th>
+                    <th>First name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {users.map((user) => <UserItem key={user.id} user={user}/>)}
+            </tbody>
         </table>
     )
 }
-
 
 export default UserList

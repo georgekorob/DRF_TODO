@@ -5,6 +5,7 @@ import './App.css';
 import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
+import {BrowserRouter, Route} from "react-router-dom";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -21,20 +22,34 @@ class App extends React.Component {
   componentDidMount() {
     const menulist = [
       {
+        'id': 1,
         'name': 'Users',
-        'url': 'http://127.0.0.1:3000/'
+        'url': '/'
       },
       {
+        'id': 2,
+        'name': 'Projects',
+        'url': '/'
+      },
+      {
+        'id': 3,
+        'name': 'Todos',
+        'url': '/'
+      },
+      {
+        'id': 4,
         'name': 'Главная',
-        'url': '#'
+        'url': '/'
       },
       {
+        'id': 5,
         'name': 'Контакты',
-        'url': '#'
+        'url': '/'
       },
       {
+        'id': 6,
         'name': 'О нас',
-        'url': '#'
+        'url': '/'
       }
     ]
 
@@ -49,8 +64,12 @@ class App extends React.Component {
   render () {
     return (
         <div>
-          <MenuList links={this.state.menulinks}/>
-          <UserList users={this.state.users}/>
+          <BrowserRouter>
+            <MenuList links={this.state.menulinks}/>
+            <Route exact path='/'>
+              <UserList users={this.state.users}/>
+            </Route>
+          </BrowserRouter>
           <Footer/>
         </div>
     )
