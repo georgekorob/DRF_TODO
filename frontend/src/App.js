@@ -7,6 +7,7 @@ import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
 import {BrowserRouter, Route} from "react-router-dom";
 import ProjectList from "./components/Projects";
+import TodoList from "./components/Todos";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -37,7 +38,7 @@ class App extends React.Component {
       {
         'id': 3,
         'name': 'Todos',
-        'url': '/'
+        'url': '/todos'
       },
       {
         'id': 4,
@@ -85,9 +86,9 @@ class App extends React.Component {
             <Route exact path='/projects'>
               <ProjectList projects={this.state.projects}/>
             </Route>
-            {/*<Route exact path='/'>*/}
-            {/*  <UserList todos={this.state.todos}/>*/}
-            {/*</Route>*/}
+            <Route exact path='/todos'>
+              <TodoList todos={this.state.todos}/>
+            </Route>
           </BrowserRouter>
           <Footer/>
         </div>
