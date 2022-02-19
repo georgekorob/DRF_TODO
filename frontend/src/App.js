@@ -5,7 +5,11 @@ import './App.css';
 import UserList from './components/Users.js';
 import MenuList from './components/Menu.js';
 import Footer from './components/Footer.js';
-
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import ProjectList from "./components/Projects";
+import TodoList from "./components/Todos";
+import NotFound404 from "./components/NotFound404";
+import ProjectTodoList from "./components/ProjectTodos";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
@@ -15,56 +19,86 @@ class App extends React.Component {
     super(props)
     this.state = {
       'users': [],
-      'links': [],
+      'menulinks': [],
+      'projects': [],
+      'todos': [],
     }
   }
 
   componentDidMount() {
-    // const userlist = [
-    //   {
-    //     'username': 'username1',
-    //     'first_name': 'first_name1',
-    //     'last_name': 'last_name1',
-    //     'email': 'email1'
-    //   }
-    // ]
     const menulist = [
       {
+        'id': 1,
         'name': 'Users',
-        'url': 'http://127.0.0.1:3000/'
+        'url': '/'
       },
       {
+        'id': 2,
+        'name': 'Projects',
+        'url': '/projects'
+      },
+      {
+        'id': 3,
+        'name': 'Todos',
+        'url': '/todos'
+      },
+      {
+        'id': 4,
         'name': 'Главная',
-        'url': '#'
+        'url': '/'
       },
       {
+        'id': 5,
         'name': 'Контакты',
-        'url': '#'
+        'url': '/'
       },
       {
+        'id': 6,
         'name': 'О нас',
-        'url': '#'
+        'url': '/'
       }
     ]
-    // this.setState(
-    //     {
-    //       'users': userlist,
-    //       'links': menulist
-    //     }
-    // )
+
     axios.get(get_url('users/')).then(response => {
       this.setState({
         'users': response.data,
-        'links': menulist
+        'menulinks': menulist
       })
     }).catch(error => console.log(error))
-    }
+    axios.get(get_url('projects/')).then(response => {
+      this.setState({
+        'projects': response.data
+      })
+    }).catch(error => console.log(error))
+    axios.get(get_url('todos/')).then(response => {
+      this.setState({
+        'todos': response.data
+      })
+    }).catch(error => console.log(error))
+  }
 
   render () {
     return (
         <div>
-          <MenuList links={this.state.links}/>
-          <UserList users={this.state.users}/>
+          <BrowserRouter>
+            <MenuList links={this.state.menulinks}/>
+            <Switch>
+              <Route exact path='/'>
+                <UserList users={this.state.users}/>
+              </Route>
+              <Route exact path='/projects'>
+                <ProjectList projects={this.state.projects}/>
+              </Route>
+              <Route exact path='/todos'>
+                <TodoList todos={this.state.todos}/>
+              </Route>
+              <Route path='/project/:id'>
+                <ProjectTodoList todos={this.state.todos}/>
+              </Route>
+              <Redirect from='/users' to='/'/>
+              <Route component={NotFound404}/>
+            </Switch>
+          </BrowserRouter>
           <Footer/>
         </div>
     )
