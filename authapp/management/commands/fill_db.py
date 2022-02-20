@@ -2,6 +2,8 @@ import json
 import os
 import random
 import names
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils import lorem_ipsum
@@ -38,17 +40,19 @@ class Command(BaseCommand):
         User.objects.create_superuser(username=os.getenv('SUPER_USER_USERNAME'),
                                       password=os.getenv('SUPER_USER_PASSWORD'),
                                       email=os.getenv('SUPER_USER_EMAIL'))
-        for i in range(40):
+        users = []
+        for i in range(20):
             first_name = names.get_first_name()
             last_name = names.get_last_name()
             username = f'{first_name}{last_name[:4]}{i}'.lower()
-            User.objects.create_user(username=username,
-                                     password=f'testpass',
-                                     email=f'{username}@testmail.ru',
-                                     first_name=first_name,
-                                     last_name=last_name)
+            users.append(User(username=username,
+                              password=f'geekbrains',
+                              email=f'{username}@geekbrains.ru',
+                              first_name=first_name,
+                              last_name=last_name))
             print(f'User {i} added.')
-        for p_i in range(20):
+        User.objects.bulk_create(users)
+        for p_i in range(10):
             users = list(User.objects.all())
             random_users = random.sample(users, 5)
             firstusername = random_users[0].username
@@ -62,6 +66,29 @@ class Command(BaseCommand):
                                     text=' '.join(text).capitalize(),
                                     user=random.choice(random_users) if i else users[0])
             print(f'Project {p_i} added.')
+
+        # for HW 6
+        perms = ['add', 'change', 'delete']
+        for group_name, models, user_names in [('Администраторы', [User, Project, Todo], ['Админ']),
+                                               ('Разработчики', [Todo], ['Разработчик1', 'Разработчик2']),
+                                               ('Владельцы', [Project, Todo], ['Владелец1', 'Владелец2'])]:
+            group = Group.objects.create(name=group_name)
+            for model in models:
+                # content_type = ContentType.objects.get_for_model(model)
+                model_name = model.__name__.lower()
+                for perm in perms:
+                    permission = Permission.objects.get(codename=f'{perm}_{model_name}')
+                    # permission, _ = Permission.objects.get_or_create(codename=f'can_{perm}_{model_name}',
+                    #                                                  name=f'Can {perm} {model_name}',
+                    #                                                  content_type=content_type)
+                    group.permissions.add(permission)
+            for user_name in user_names:
+                user = User.objects.create_user(username=user_name,
+                                                password=f'geekbrains',
+                                                email=f'{user_name}@geekbrains.ru',
+                                                first_name='first_name',
+                                                last_name='last_name')
+                group.user_set.add(user)
 
         # User.objects.all().delete()
         # for name in ['authapp']:

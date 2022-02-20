@@ -13,56 +13,30 @@ import ProjectTodoList from "./components/ProjectTodos";
 
 const DOMAIN = 'http://127.0.0.1:8000/api/'
 const get_url = (url) => `${DOMAIN}${url}`
+const menulist = [
+      { 'id': 1, 'name': 'Users', 'url': '/' },
+      { 'id': 2, 'name': 'Projects', 'url': '/projects' },
+      { 'id': 3, 'name': 'Todos', 'url': '/todos' },
+      { 'id': 4, 'name': 'Главная', 'url': '/' },
+      { 'id': 5, 'name': 'Контакты', 'url': '/' },
+      { 'id': 6, 'name': 'О нас', 'url': '/' }
+    ]
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       'users': [],
-      'menulinks': [],
+      'menulinks': menulist,
       'projects': [],
       'todos': [],
     }
   }
 
   componentDidMount() {
-    const menulist = [
-      {
-        'id': 1,
-        'name': 'Users',
-        'url': '/'
-      },
-      {
-        'id': 2,
-        'name': 'Projects',
-        'url': '/projects'
-      },
-      {
-        'id': 3,
-        'name': 'Todos',
-        'url': '/todos'
-      },
-      {
-        'id': 4,
-        'name': 'Главная',
-        'url': '/'
-      },
-      {
-        'id': 5,
-        'name': 'Контакты',
-        'url': '/'
-      },
-      {
-        'id': 6,
-        'name': 'О нас',
-        'url': '/'
-      }
-    ]
-
     axios.get(get_url('users/')).then(response => {
       this.setState({
-        'users': response.data,
-        'menulinks': menulist
+        'users': response.data
       })
     }).catch(error => console.log(error))
     axios.get(get_url('projects/')).then(response => {
