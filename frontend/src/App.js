@@ -8,6 +8,7 @@ import Footer from './components/Footer.js';
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import ProjectList from "./components/Projects";
 import TodoList from "./components/Todos";
+import LoginForm from "./components/Auth";
 import NotFound404 from "./components/NotFound404";
 import ProjectTodoList from "./components/ProjectTodos";
 
@@ -30,7 +31,20 @@ class App extends React.Component {
       'menulinks': menulist,
       'projects': [],
       'todos': [],
+      'token': '',
     }
+  }
+
+  is_auth() {
+    return !!this.state.token;
+  }
+
+  logout() {
+
+  }
+
+  get_token() {
+
   }
 
   componentDidMount() {
@@ -55,7 +69,9 @@ class App extends React.Component {
     return (
         <div>
           <BrowserRouter>
-            <MenuList links={this.state.menulinks}/>
+            <MenuList links={this.state.menulinks}
+                      is_auth={() => this.is_auth()}
+                      logout={() => this.logout()}/>
             <Switch>
               <Route exact path='/'>
                 <UserList users={this.state.users}/>
@@ -68,6 +84,9 @@ class App extends React.Component {
               </Route>
               <Route path='/project/:id'>
                 <ProjectTodoList todos={this.state.todos}/>
+              </Route>
+              <Route exact path='/login'>
+                <LoginForm get_token={(username, password) => this.get_token(username, password)}/>
               </Route>
               <Redirect from='/users' to='/'/>
               <Route component={NotFound404}/>
