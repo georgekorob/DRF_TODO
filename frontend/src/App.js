@@ -43,8 +43,14 @@ class App extends React.Component {
 
   }
 
-  set_token() {
+  load_data() {
 
+  }
+
+  set_token(token) {
+    const cookies = new Cookies()
+    cookies.set('token', token)
+    this.setState({'token': token}, () => this.load_data())
   }
 
   get_token(username, password) {
