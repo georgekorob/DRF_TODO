@@ -9,7 +9,7 @@ const MenuItem = ({link}) => {
     )
 }
 
-const MenuList = ({links, is_auth, logout}) => {
+const MenuList = ({links, is_auth, logout, username}) => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <a className="navbar-brand" href="/">GeekBrains</a>
@@ -21,9 +21,10 @@ const MenuList = ({links, is_auth, logout}) => {
                 <ul className="navbar-nav mr-auto col-9">
                     {links.map((link) => <MenuItem key={link.id} link={link}/>)}
                     <li>
-                        {is_auth() ? <button onClick={() => logout()}>Logout</button> :
-                            <Link className="nav-link" to='/login'> Login </Link>}
+                        {is_auth() ? <Link className="nav-link" onClick={() => logout()}>Выйти</Link> :
+                            <Link className="nav-link" to='/login'>Войти</Link>}
                     </li>
+                    {is_auth() ? <li><h5 className="text-white m-2">{username()}</h5></li> : <i/>}
                 </ul>
                 <form className="navbar-nav justify-content-end col-3">
                     <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" />
