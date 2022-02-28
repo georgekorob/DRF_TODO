@@ -40,7 +40,7 @@ class App extends React.Component {
   }
 
   logout() {
-
+    this.set_token('')
   }
 
   load_data() {
