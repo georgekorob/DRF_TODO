@@ -88,3 +88,13 @@ class TestProject(APITestCase):
         project_ = Project.objects.get(id=project.id)
         self.assertEqual(project_.name, 'somename')
         self.client.logout()
+
+    def test_put_mixer_todo(self):
+        todo = mixer.blend(Todo, text='starttext')
+        self.client.login(username=self.name, password=self.password)
+        response = self.client.patch(f'/api/todos/{todo.id}/', {'text': 'sometext'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        todo_ = Todo.objects.get(id=todo.id)
+        self.assertEqual(todo_.text, 'sometext')
+        self.client.logout()
