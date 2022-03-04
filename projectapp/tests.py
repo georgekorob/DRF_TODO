@@ -1,8 +1,10 @@
 from django.test import TestCase
+from mixer.backend.django import mixer
+
 from authapp.models import User
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate, APIClient, APISimpleTestCase, APITestCase
-from projectapp.models import Project
+from projectapp.models import Project, Todo
 from projectapp.views import ProjectModelViewSet
 
 
@@ -62,3 +64,29 @@ class TestProjectViewSet(TestCase):
         self.assertEqual(project_.name, self.data_put.get('name'))
 
         client.logout()
+
+
+# APITestCase
+class TestProject(APITestCase):
+
+    def setUp(self) -> None:
+        self.name = 'admin'
+        self.password = 'admin_123456789'
+        self.email = 'admin_123456789@mail.ru'
+
+        self.admin = User.objects.create_superuser(self.name, self.email, self.password)
+        self.url = '/api/todos/'
+
+    def tearDown(self) -> None:
+        pass
+
+    def test_put_mixer(self):
+        todo = mixer.blend(Todo, text='starttext')
+        print(todo.text)
+        self.client.login(username=self.name, password=self.password)
+        response = self.client.patch(f'{self.url}{todo.id}/', {'text': 'sometext'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        todo_ = Todo.objects.get(id=todo.id)
+        self.assertEqual(todo_.text, 'sometext')
+        self.client.logout()
