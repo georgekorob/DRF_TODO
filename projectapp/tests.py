@@ -75,18 +75,16 @@ class TestProject(APITestCase):
         self.email = 'admin_123456789@mail.ru'
 
         self.admin = User.objects.create_superuser(self.name, self.email, self.password)
-        self.url = '/api/todos/'
 
     def tearDown(self) -> None:
         pass
 
-    def test_put_mixer(self):
-        todo = mixer.blend(Todo, text='starttext')
-        print(todo.text)
+    def test_put_mixer_project(self):
+        project = mixer.blend(Project, name='startname')
         self.client.login(username=self.name, password=self.password)
-        response = self.client.patch(f'{self.url}{todo.id}/', {'text': 'sometext'}, format='json')
+        response = self.client.patch(f'/api/projects/{project.id}/', {'name': 'somename'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        todo_ = Todo.objects.get(id=todo.id)
-        self.assertEqual(todo_.text, 'sometext')
+        project_ = Project.objects.get(id=project.id)
+        self.assertEqual(project_.name, 'somename')
         self.client.logout()
