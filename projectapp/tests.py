@@ -2,7 +2,6 @@ from django.test import TestCase
 from authapp.models import User
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, force_authenticate, APIClient, APISimpleTestCase, APITestCase
-
 from projectapp.models import Project
 from projectapp.views import ProjectModelViewSet
 
@@ -16,7 +15,7 @@ class TestProjectViewSet(TestCase):
 
         self.admin = User.objects.create_superuser(self.name, self.email, self.password)
         self.data = {'name': 'jessicabelt12', 'link': 'https://github.com/jessicabelt12/project0'}
-        self.data_put = {'name': 'barbaramart16', 'link': '"https://github.com/jessicabelt12/project0'}
+        self.data_put = {'name': 'barbaramart16'}
         self.url = '/api/projects/'
 
     def tearDown(self) -> None:
@@ -47,3 +46,19 @@ class TestProjectViewSet(TestCase):
         view = ProjectModelViewSet.as_view({'post': 'create'})
         response = view(request)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    # APIClient
+    def test_client_create_admin(self):
+        project = Project.objects.create(**self.data)
+        project.users.add(self.admin)
+        project.save()
+        client = APIClient()
+        client.login(username=self.name, password=self.password)
+        # client.force_login(self.admin)
+        response = client.patch(f'{self.url}{project.id}/', self.data_put)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        project_ = Project.objects.get(id=project.id)
+        self.assertEqual(project_.name, self.data_put.get('name'))
+
+        client.logout()
