@@ -1,9 +1,10 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
-
+from requests.auth import HTTPBasicAuth
 from authapp.models import User
 from rest_framework import status
-from rest_framework.test import APIRequestFactory, force_authenticate, APIClient, APISimpleTestCase, APITestCase
+from rest_framework.test import APIRequestFactory, force_authenticate, APIClient,\
+    APITestCase, CoreAPIClient
 from projectapp.models import Project, Todo
 from projectapp.views import ProjectModelViewSet
 
@@ -98,3 +99,11 @@ class TestProject(APITestCase):
         todo_ = Todo.objects.get(id=todo.id)
         self.assertEqual(todo_.text, 'sometext')
         self.client.logout()
+
+    def test_core_api(self):
+        count_of_test_object = 5
+        mixer.cycle(count_of_test_object).blend(Todo)
+        client = CoreAPIClient()
+        client.session.auth = HTTPBasicAuth(self.name, self.password)
+        schema = client.get('http://testserver/api/todos/')
+        assert(len(schema) == count_of_test_object)
