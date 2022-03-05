@@ -17,8 +17,8 @@ class Project(models.Model):
 class Todo(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     text = models.TextField(null=True, blank=True)
-    create_date = models.DateField(editable=False)
-    update_date = models.DateField()
+    create_date = models.DateTimeField(editable=False)
+    update_date = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 

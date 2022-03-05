@@ -32,26 +32,38 @@ class App extends React.Component {
             'menulinks': menulist,
             'projects': [],
             'todos': [],
-            'token': '',
-            'username': '',
+            'user': {
+                'username': '',
+                'is_auth': false,
+            }
         }
     }
 
     is_auth() {
-        return !!this.state.token;
+        return this.state.user.is_auth;
     }
 
-    logout() {
-        this.set_token('', '');
-        this.setState({'username': ''})
+    get_username() {
+        return this.state.user.username;
+    }
+
+    get_user() {
+        return this.state.user;
+    }
+
+    getHeaders() {
+        const cookies = new Cookies()
+        const access = cookies.get('access')
+        let headers = {'Content-Type': 'application/json'}
+        if (this.state.user.is_auth) {
+            headers['Authorization'] = `Bearer ${access}`
+        }
+        return headers
     }
 
     load_data() {
         // console.log(this.state.token)
-        let headers = {'Content-Type': 'application/json'}
-        if (this.is_auth()) {
-            headers['Authorization'] = `Token ${this.state.token}`
-        }
+        const headers = this.getHeaders();
         axios.get(get_url('users/'), {headers}).then(response => {
             this.setState({
                 'users': response.data
@@ -78,35 +90,35 @@ class App extends React.Component {
         });
     }
 
-    set_token(token, username) {
+    set_token(access, refresh, user) {
         const cookies = new Cookies()
-        cookies.set('token', token)
-        cookies.set('username', username)
-        this.setState({'token': token, 'username': username}, () => this.load_data())
+        cookies.set('access', access)
+        cookies.set('refresh', refresh)
+        cookies.set('username', user.username)
+        this.setState({'user': user}, () => this.load_data())
+    }
+
+    logout() {
+        const user = {'username': '', 'is_auth': false};
+        this.set_token('', '', user);
     }
 
     get_token(username, password) {
-        axios.post('http://127.0.0.1:8000/api-token-auth/', {
+        axios.post('http://127.0.0.1:8000/api/token/', {
             username: username,
             password: password
         }).then(response => {
-            this.set_token(response.data['token'], username)
+            const user = {'username': username, 'is_auth': true};
+            this.set_token(response.data['access'], response.data['refresh'], user)
         }).catch(error => alert('Неверный логин или пароль'))
     }
 
-    get_token_from_cookies() {
-        const cookies = new Cookies()
-        const token = cookies.get('token')
-        const username = cookies.get('username')
-        this.setState({'token': token, 'username': username}, () => this.load_data())
-    }
-
     componentDidMount() {
-        this.get_token_from_cookies()
-    }
-
-    get_username() {
-        return this.state.username;
+        const cookies = new Cookies()
+        const username = cookies.get('username')
+        if ((username !== "") && (username != null)) {
+            this.setState({'user': {'username': username, 'is_auth': true}}, () => this.load_data())
+        }
     }
 
     render() {
@@ -114,9 +126,8 @@ class App extends React.Component {
             <div>
                 <BrowserRouter>
                     <MenuList links={this.state.menulinks}
-                              is_auth={() => this.is_auth()}
-                              logout={() => this.logout()}
-                              username={() => this.get_username()}/>
+                              get_user={() => this.get_user()}
+                              logout={() => this.logout()}/>
                     <Switch>
                         <Route exact path='/'>
                             <UserList users={this.state.users}/>
