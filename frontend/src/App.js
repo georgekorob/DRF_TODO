@@ -13,8 +13,9 @@ import NotFound404 from "./components/NotFound404";
 import ProjectTodoList from "./components/ProjectTodos";
 import Cookies from "universal-cookie";
 
-const DOMAIN = 'http://127.0.0.1:8000/api/'
-const get_url = (url) => `${DOMAIN}${url}`
+const DOMAIN = 'http://127.0.0.1:8000/'
+const get_url = (url) => `${DOMAIN}api/${url}`
+const get_ql = (query) => `${DOMAIN}graphql/?query=${query}`
 const menulist = [
     {'id': 1, 'name': 'Users', 'url': '/'},
     {'id': 2, 'name': 'Projects', 'url': '/projects'},
@@ -64,26 +65,31 @@ class App extends React.Component {
     load_data() {
         // console.log(this.state.token)
         const headers = this.getHeaders();
-        axios.get(get_url('users/'), {headers}).then(response => {
+        const users_ql = '{users{id,username,firstName,lastName,email}}'
+        axios.get(get_ql(users_ql), {headers}).then(response => {
             this.setState({
-                'users': response.data
+                'users': response.data.data.users
             })
         }).catch(error => {
             console.log(error)
             this.setState({'users': []})
         });
-        axios.get(get_url('projects/'), {headers}).then(response => {
+        const projects_ql = '{projects{id,name,link}}'
+        axios.get(get_ql(projects_ql), {headers}).then(response => {
             this.setState({
-                'projects': response.data
+                'projects': response.data.data.projects
             })
         }).catch(error => {
             console.log(error)
             this.setState({'projects': []})
         });
-        axios.get(get_url('todos/'), {headers}).then(response => {
-            this.setState({
-                'todos': response.data
+        const todos_ql = '{todos{id,text,createDate,updateDate,project{id},user{username}}}'
+        axios.get(get_ql(todos_ql), {headers}).then(response => {
+            response.data.data.todos.forEach((todo) => {
+                todo.project = todo.project.id;
+                todo.user = todo.user.username;
             })
+            this.setState({'todos': response.data.data.todos})
         }).catch(error => {
             console.log(error)
             this.setState({'todos': []})
