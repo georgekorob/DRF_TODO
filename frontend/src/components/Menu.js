@@ -21,7 +21,7 @@ const MenuList = ({links, get_user, logout}) => {
                 <ul className="navbar-nav mr-auto col-9">
                     {links.map((link) => <MenuItem key={link.id} link={link}/>)}
                     <li>
-                        {get_user().is_auth ? <Link className="nav-link" onClick={() => logout()}>Выйти</Link> :
+                        {get_user().is_auth ? <Link className="nav-link" to='/' onClick={() => logout()}>Выйти</Link> :
                             <Link className="nav-link" to='/login'>Войти</Link>}
                     </li>
                     {get_user().is_auth ? <li><h5 className="text-white m-2">{get_user().username}</h5></li> : <i/>}
