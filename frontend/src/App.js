@@ -12,6 +12,7 @@ import LoginForm from "./components/Auth";
 import NotFound404 from "./components/NotFound404";
 import ProjectTodoList from "./components/ProjectTodos";
 import Cookies from "universal-cookie";
+import ProjectForm from "./components/ProjectForm";
 
 const DOMAIN = 'http://127.0.0.1:8000/'
 const getUrl = (url) => `${DOMAIN}api/${url}`
@@ -119,6 +120,21 @@ class App extends React.Component {
         }
     }
 
+    createProject(project) {
+        const headers = this.getHeaders()
+        axios.post(getUrl(`projects/`), project, {headers}).then(response => {
+            const projects_ql = '{projects{id,name,link}}'
+            axios.get(getQl(projects_ql), {headers}).then(response => {
+                this.setState({projects: response.data.data.projects})
+            }).catch(error => {
+                console.log(error)
+                this.setState({projects: []})
+            });
+            // const projects = [...this.state.projects, project]
+            // this.setState({projects: projects})
+        }).catch(error => { console.log(error) })
+    }
+
     deleteProject(id) {
         const headers = this.getHeaders()
         axios.delete(getUrl(`projects/${id}`), {headers}).then(response => {
@@ -145,6 +161,10 @@ class App extends React.Component {
                             <ProjectList projects={this.state.projects}
                                          deleteProject={(id) => this.deleteProject(id)}/>
                         </Route>
+                        <Route exact path='/projects/create' component={() =>
+                            <ProjectForm users={this.state.users}
+                                         createProject={(project) => this.createProject(project)}/>
+                        }/>
                         <Route exact path='/todos'>
                             <TodoList todos={this.state.todos}/>
                         </Route>

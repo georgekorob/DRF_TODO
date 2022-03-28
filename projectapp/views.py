@@ -16,6 +16,9 @@ class ProjectModelViewSet(ModelViewSet):
     # pagination_class = ProjectLimitOffsetPagination
     filterset_class = ProjectFilter
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     return super().dispatch(request, *args, **kwargs)
+
     # Another filter
     # def get_queryset(self):
     #     queryset = Project.objects.all()
