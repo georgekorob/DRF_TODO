@@ -14,8 +14,8 @@ import ProjectTodoList from "./components/ProjectTodos";
 import Cookies from "universal-cookie";
 
 const DOMAIN = 'http://127.0.0.1:8000/'
-const get_url = (url) => `${DOMAIN}api/${url}`
-const get_ql = (query) => `${DOMAIN}graphql/?query=${query}`
+const getUrl = (url) => `${DOMAIN}api/${url}`
+const getQl = (query) => `${DOMAIN}graphql/?query=${query}`
 const menulist = [
     {'id': 1, 'name': 'Users', 'url': '/'},
     {'id': 2, 'name': 'Projects', 'url': '/projects'},
@@ -44,10 +44,6 @@ class App extends React.Component {
         return this.state.user.is_auth;
     }
 
-    get_username() {
-        return this.state.user.username;
-    }
-
     get_user() {
         return this.state.user;
     }
@@ -66,33 +62,29 @@ class App extends React.Component {
         // console.log(this.state.token)
         const headers = this.getHeaders();
         const users_ql = '{users{id,username,firstName,lastName,email}}'
-        axios.get(get_ql(users_ql), {headers}).then(response => {
-            this.setState({
-                'users': response.data.data.users
-            })
+        axios.get(getQl(users_ql), {headers}).then(response => {
+            this.setState({users: response.data.data.users})
         }).catch(error => {
             console.log(error)
-            this.setState({'users': []})
+            this.setState({users: []})
         });
         const projects_ql = '{projects{id,name,link}}'
-        axios.get(get_ql(projects_ql), {headers}).then(response => {
-            this.setState({
-                'projects': response.data.data.projects
-            })
+        axios.get(getQl(projects_ql), {headers}).then(response => {
+            this.setState({projects: response.data.data.projects})
         }).catch(error => {
             console.log(error)
-            this.setState({'projects': []})
+            this.setState({projects: []})
         });
         const todos_ql = '{todos{id,text,createDate,updateDate,project{id},user{username}}}'
-        axios.get(get_ql(todos_ql), {headers}).then(response => {
+        axios.get(getQl(todos_ql), {headers}).then(response => {
             response.data.data.todos.forEach((todo) => {
                 todo.project = todo.project.id;
                 todo.user = todo.user.username;
             })
-            this.setState({'todos': response.data.data.todos})
+            this.setState({todos: response.data.data.todos})
         }).catch(error => {
             console.log(error)
-            this.setState({'todos': []})
+            this.setState({todos: []})
         });
     }
 
@@ -101,7 +93,7 @@ class App extends React.Component {
         cookies.set('access', access)
         cookies.set('refresh', refresh)
         cookies.set('username', user.username)
-        this.setState({'user': user}, () => this.load_data())
+        this.setState({user: user}, () => this.load_data())
     }
 
     logout() {
@@ -123,8 +115,19 @@ class App extends React.Component {
         const cookies = new Cookies()
         const username = cookies.get('username')
         if ((username !== "") && (username != null)) {
-            this.setState({'user': {'username': username, 'is_auth': true}}, () => this.load_data())
+            this.setState({user: {'username': username, 'is_auth': true}}, () => this.load_data())
         }
+    }
+
+    deleteProject(id) {
+        const headers = this.getHeaders()
+        axios.delete(getUrl(`projects/${id}`), {headers}).then(response => {
+            const projects = this.state.projects.filter((project) => project.id !== id)
+            this.setState({projects: projects})
+        }).catch(error => {
+            console.log(error)
+            this.setState({projects: []})
+        })
     }
 
     render() {
@@ -139,7 +142,8 @@ class App extends React.Component {
                             <UserList users={this.state.users}/>
                         </Route>
                         <Route exact path='/projects'>
-                            <ProjectList projects={this.state.projects}/>
+                            <ProjectList projects={this.state.projects}
+                                         deleteProject={(id) => this.deleteProject(id)}/>
                         </Route>
                         <Route exact path='/todos'>
                             <TodoList todos={this.state.todos}/>
