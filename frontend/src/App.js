@@ -13,10 +13,14 @@ import NotFound404 from "./components/NotFound404";
 import ProjectTodoList from "./components/ProjectTodos";
 import Cookies from "universal-cookie";
 import ProjectForm from "./components/ProjectForm";
+import TodoForm from "./components/TodoForm";
 
 const DOMAIN = 'http://127.0.0.1:8000/'
 const getUrl = (url) => `${DOMAIN}api/${url}`
 const getQl = (query) => `${DOMAIN}graphql/?query=${query}`
+const projects_ql = '{projects{id,name,link}}'
+const users_ql = '{users{id,username,firstName,lastName,email}}'
+const todos_ql = '{todos{id,text,createDate,updateDate,project{id},user{username}}}'
 const menulist = [
     {'id': 1, 'name': 'Users', 'url': '/'},
     {'id': 2, 'name': 'Projects', 'url': '/projects'},
@@ -37,7 +41,8 @@ class App extends React.Component {
             'user': {
                 'username': '',
                 'is_auth': false,
-            }
+            },
+            'filterText': ''
         }
     }
 
@@ -62,21 +67,18 @@ class App extends React.Component {
     load_data() {
         // console.log(this.state.token)
         const headers = this.getHeaders();
-        const users_ql = '{users{id,username,firstName,lastName,email}}'
         axios.get(getQl(users_ql), {headers}).then(response => {
             this.setState({users: response.data.data.users})
         }).catch(error => {
             console.log(error)
             this.setState({users: []})
         });
-        const projects_ql = '{projects{id,name,link}}'
         axios.get(getQl(projects_ql), {headers}).then(response => {
             this.setState({projects: response.data.data.projects})
         }).catch(error => {
             console.log(error)
             this.setState({projects: []})
         });
-        const todos_ql = '{todos{id,text,createDate,updateDate,project{id},user{username}}}'
         axios.get(getQl(todos_ql), {headers}).then(response => {
             response.data.data.todos.forEach((todo) => {
                 todo.project = todo.project.id;
@@ -99,7 +101,7 @@ class App extends React.Component {
 
     logout() {
         const user = {'username': '', 'is_auth': false};
-        this.set_token('', '', user);
+        this.set_token('', '', user)
     }
 
     get_token(username, password) {
@@ -123,7 +125,6 @@ class App extends React.Component {
     createProject(project) {
         const headers = this.getHeaders()
         axios.post(getUrl(`projects/`), project, {headers}).then(response => {
-            const projects_ql = '{projects{id,name,link}}'
             axios.get(getQl(projects_ql), {headers}).then(response => {
                 this.setState({projects: response.data.data.projects})
             }).catch(error => {
@@ -132,7 +133,9 @@ class App extends React.Component {
             });
             // const projects = [...this.state.projects, project]
             // this.setState({projects: projects})
-        }).catch(error => { console.log(error) })
+        }).catch(error => {
+            console.log(error)
+        })
     }
 
     deleteProject(id) {
@@ -146,19 +149,55 @@ class App extends React.Component {
         })
     }
 
+    createTodo(todo) {
+        const headers = this.getHeaders()
+        axios.post(getUrl(`todos/`), todo, {headers}).then(response => {
+            axios.get(getQl(todos_ql), {headers}).then(response => {
+                response.data.data.todos.forEach((todo) => {
+                    todo.project = todo.project.id;
+                    todo.user = todo.user.username;
+                })
+                this.setState({todos: response.data.data.todos})
+            }).catch(error => {
+                console.log(error)
+                this.setState({todos: []})
+            });
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    deleteTodo(id) {
+        const headers = this.getHeaders()
+        axios.delete(getUrl(`todos/${id}`), {headers}).then(response => {
+            const todos = this.state.todos.filter((todo) => todo.id !== id)
+            this.setState({todos: todos})
+        }).catch(error => {
+            console.log(error)
+            this.setState({todos: []})
+        })
+    }
+
+    filterProject(text) {
+        this.setState({filterText: text})
+    }
+
     render() {
         return (
             <div>
                 <BrowserRouter>
                     <MenuList links={this.state.menulinks}
                               get_user={() => this.get_user()}
-                              logout={() => this.logout()}/>
+                              logout={() => this.logout()}
+                              filterProject={(text) => this.filterProject(text)}/>
                     <Switch>
                         <Route exact path='/'>
                             <UserList users={this.state.users}/>
                         </Route>
                         <Route exact path='/projects'>
-                            <ProjectList projects={this.state.projects}
+                            <ProjectList projects={this.state.projects.filter(project =>
+                                project.name.includes(this.state.filterText))}
+                                         get_user={() => this.get_user()}
                                          deleteProject={(id) => this.deleteProject(id)}/>
                         </Route>
                         <Route exact path='/projects/create' component={() =>
@@ -166,8 +205,15 @@ class App extends React.Component {
                                          createProject={(project) => this.createProject(project)}/>
                         }/>
                         <Route exact path='/todos'>
-                            <TodoList todos={this.state.todos}/>
+                            <TodoList todos={this.state.todos}
+                                      get_user={() => this.get_user()}
+                                      deleteTodo={(id) => this.deleteTodo(id)}/>
                         </Route>
+                        <Route exact path='/todos/create' component={() =>
+                            <TodoForm users={this.state.users}
+                                      projects={this.state.projects}
+                                      createTodo={(todo) => this.createTodo(todo)}/>
+                        }/>
                         <Route path='/project/:id'>
                             <ProjectTodoList todos={this.state.todos}/>
                         </Route>

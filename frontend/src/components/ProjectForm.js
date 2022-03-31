@@ -7,7 +7,7 @@ class ProjectForm extends React.Component {
         this.state = {name: '', link: '', users: []}
     }
 
-    handleAuthorChange(event) {
+    handleProjectChange(event) {
         if (!event.target.selectedOptions) {
             this.setState({users: []})
         } else {
@@ -43,7 +43,7 @@ class ProjectForm extends React.Component {
                            onChange={(event) => this.handleChange(event)}/>
                 </div>
                 <select name="users" multiple onChange={(event) =>
-                    this.handleAuthorChange(event)}>
+                    this.handleProjectChange(event)}>
                     {this.props.users.map((item) =>
                         <option key={item.id} value={item.id}>{item.username}</option>)}
                 </select>

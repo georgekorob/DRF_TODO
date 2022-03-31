@@ -29,7 +29,7 @@ class Query(ObjectType):
     users = graphene.List(UserType)
 
     def resolve_todos(root, info):
-        return Todo.objects.all()
+        return Todo.objects.filter(is_active=True)
 
     def resolve_projects(root, info):
         return Project.objects.all()

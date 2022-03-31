@@ -18,3 +18,9 @@ class TodoModelSerializer(ModelSerializer):
         model = Todo
         # fields = '__all__'
         exclude = ('is_active',)
+
+
+class TodoModelPostSerializer(ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = ['text', 'user', 'project']
