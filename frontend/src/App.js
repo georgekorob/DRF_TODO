@@ -15,7 +15,9 @@ import Cookies from "universal-cookie";
 import ProjectForm from "./components/ProjectForm";
 import TodoForm from "./components/TodoForm";
 
-const DOMAIN = 'http://127.0.0.1:8000/'
+// const DOMAIN = 'http://127.0.0.1:8000/'
+// const DOMAIN = 'http://192.168.0.2:8000/'
+const DOMAIN = 'http://k-bazz.duckdns.org:45088/'
 const getUrl = (url) => `${DOMAIN}api/${url}`
 const getQl = (query) => `${DOMAIN}graphql/?query=${query}`
 const projects_ql = '{projects{id,name,link}}'
@@ -105,7 +107,7 @@ class App extends React.Component {
     }
 
     get_token(username, password) {
-        axios.post('http://127.0.0.1:8000/api/token/', {
+        axios.post(getUrl('token/'), {
             username: username,
             password: password
         }).then(response => {

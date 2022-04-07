@@ -9,3 +9,6 @@ COPY ./ ./
 RUN pip3 install -r requirements.txt
 RUN pip3 install psycopg2-binary==2.9.3
 RUN pip3 install gunicorn
+
+COPY wait-for-postgres.sh .
+RUN chmod +x wait-for-postgres.sh
