@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:13.1
+    privileged: true
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: geekbrains
+      POSTGRES_PASSWORD: 1
+      POSTGRES_DB: drftodo_db
+
+  backend:
+    build:
+      context: ./drftodo
+    expose:
+      - 8080
+    command: bash -c "
+      python manage.py migrate &&
+      python manage.py fill_db &&
+      gunicorn drftodo.wsgi -b 0.0.0.0:8080
+      "
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 8000:85
+    depends_on:
+      - backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 85:85
+    depends_on:
+      - nginx

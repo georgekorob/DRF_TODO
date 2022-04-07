@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from graphene_django.views import GraphQLView
 from rest_framework.authtoken.views import obtain_auth_token
 from drf_yasg import openapi
@@ -43,6 +44,7 @@ router.register('projects', ProjectModelViewSet)
 router.register('todos', TodoModelViewSet)
 
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='index.html')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/', include(router.urls)),

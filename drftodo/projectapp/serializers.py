@@ -1,5 +1,4 @@
-from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
-from authapp.serializers import UserModelSerializer
+from rest_framework.serializers import ModelSerializer
 from projectapp.models import Project, Todo
 
 
